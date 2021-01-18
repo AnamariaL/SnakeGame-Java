@@ -32,14 +32,18 @@ public class GamePanel extends JPanel implements ActionListener{
 	Timer timer;
 	
 	Random random;
+	
+	//for pause&resume 
+	static boolean gameOn = false;
+	
 	//for start menu
-	public static enum STATE{
+	/*public static enum STATE{
 		MENU,
 		GAME
 	};
 	 public static STATE state = STATE.MENU;
 	 GameMenu menu = new GameMenu();
-	 
+	 */
 
 	GamePanel(){
 		
@@ -66,6 +70,17 @@ public class GamePanel extends JPanel implements ActionListener{
 		
 
 	}
+	//pause& resume by pressing Space
+	public void pause() {
+		
+		GamePanel.gameOn = true;
+		timer.stop();
+	}
+	public void resume() {
+		
+		GamePanel.gameOn = false;
+		timer.start();
+	}
 	public void paintComponent(Graphics g) {
 
 		super.paintComponent(g);
@@ -73,7 +88,7 @@ public class GamePanel extends JPanel implements ActionListener{
 		draw(g);
 	}
 	public void draw(Graphics g) {
-		if(state == STATE.GAME) {
+		//if(state == STATE.GAME) {
 		if (running) {
 
 		/*//the grid in the background
@@ -110,9 +125,9 @@ public class GamePanel extends JPanel implements ActionListener{
 			
 			gameOver(g);
 		}
-		}else if(state == STATE.MENU) {
+		/*}else if(state == STATE.MENU) {
 			menu.render(g);
-		}
+		}*/
 	}
 	public void newApple() {
 
@@ -214,7 +229,7 @@ public class GamePanel extends JPanel implements ActionListener{
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if(state == STATE.GAME) {
+			//if(state == STATE.GAME) {
 			switch(e.getKeyCode()) {
 			case KeyEvent.VK_LEFT:
 				if(direction != 'R') {
@@ -236,10 +251,17 @@ public class GamePanel extends JPanel implements ActionListener{
 					direction = 'D';
 				}
 				break;
+			case KeyEvent.VK_SPACE:
+				if(GamePanel.gameOn) {
+					resume();
+				}else {
+					pause();
+				}
+				break;
 
 			}
 		}
-		}
+		//}
 	}
 
 }
