@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements ActionListener{
 	
-	static final int SCREEN_WIDTH =1300;
+	static final int SCREEN_WIDTH =900;
 	static final int SCREEN_HEIGHT=750;
 	//the size of things(EVERTHING)
 	static final int UNIT_SIZE = 50;
@@ -32,7 +32,14 @@ public class GamePanel extends JPanel implements ActionListener{
 	Timer timer;
 	
 	Random random;
-
+	//for start menu
+	public static enum STATE{
+		MENU,
+		GAME
+	};
+	 public static STATE state = STATE.MENU;
+	 GameMenu menu = new GameMenu();
+	 
 
 	GamePanel(){
 		
@@ -42,6 +49,8 @@ public class GamePanel extends JPanel implements ActionListener{
 		this.setBackground(Color.black);
 		this.setFocusable(true);
 		this.addKeyListener(new MyKeyAdapter());
+		
+		this.addMouseListener(new MouseInput());
 		
 		startGame();
 
@@ -54,6 +63,7 @@ public class GamePanel extends JPanel implements ActionListener{
 		
 		timer = new Timer(DELAY,this);
 		timer.start();
+		
 
 	}
 	public void paintComponent(Graphics g) {
@@ -63,7 +73,7 @@ public class GamePanel extends JPanel implements ActionListener{
 		draw(g);
 	}
 	public void draw(Graphics g) {
-		
+		if(state == STATE.GAME) {
 		if (running) {
 
 		/*//the grid in the background
@@ -74,18 +84,19 @@ public class GamePanel extends JPanel implements ActionListener{
 
 				}*/
 				//the apple
-	    g.setColor(Color.red);
-		g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
+			g.setColor(Color.red);
+			g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
 	
 				//the snake
-		for(int i = 0; i<bodyParts;i++) {
-			if(i == 0) {
-				g.setColor(Color.green);
-				g.fillRect(x[i],y[i],UNIT_SIZE,UNIT_SIZE);
-			}
-		
-			else {
-				g.setColor(new Color(45,180,0));
+			for(int i = 0; i<bodyParts;i++) {
+				if(i == 0) {
+					
+					g.setColor(Color.green);
+					g.fillRect(x[i],y[i],UNIT_SIZE,UNIT_SIZE);
+					
+				}else {
+					
+					g.setColor(new Color(45,180,0));
 				//the snake color
 				//g.setColor(new Color(random.nextInt(255),random.nextInt(255),random.nextInt(255)));
 				g.fillRect(x[i],y[i],UNIT_SIZE,UNIT_SIZE);
@@ -98,6 +109,9 @@ public class GamePanel extends JPanel implements ActionListener{
 		}else {
 			
 			gameOver(g);
+		}
+		}else if(state == STATE.MENU) {
+			menu.render(g);
 		}
 	}
 	public void newApple() {
@@ -200,6 +214,7 @@ public class GamePanel extends JPanel implements ActionListener{
 
 		@Override
 		public void keyPressed(KeyEvent e) {
+			if(state == STATE.GAME) {
 			switch(e.getKeyCode()) {
 			case KeyEvent.VK_LEFT:
 				if(direction != 'R') {
@@ -223,6 +238,7 @@ public class GamePanel extends JPanel implements ActionListener{
 				break;
 
 			}
+		}
 		}
 	}
 
