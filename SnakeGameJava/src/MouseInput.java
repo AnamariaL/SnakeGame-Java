@@ -24,7 +24,7 @@ public class MouseInput implements MouseListener {
 		if(mx >= GamePanel.SCREEN_WIDTH /2 +120 && mx <= GamePanel.SCREEN_WIDTH /2 +220) {
 			if(my >= 150 && my <= 200) {
 				//press play button
-				GamePanel.state= GamePanel.state.GAME;
+			//	GamePanel.state= GamePanel.state.GAME;
 				
 			}
 		}

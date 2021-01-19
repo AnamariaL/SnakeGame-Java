@@ -12,12 +12,12 @@ public class GamePanel extends JPanel implements ActionListener{
 	//the size of things(EVERTHING)
 	static final int UNIT_SIZE = 50;
 	static final int GAME_UNITS =(SCREEN_WIDTH*SCREEN_HEIGHT)/(UNIT_SIZE*UNIT_SIZE);
-	static final int DELAY= 175;
+	static  int DELAY= 175;
 	
 	final int x[] = new int[GAME_UNITS];
 	final int y[] = new int[GAME_UNITS];
 	
-	int bodyParts = 6;
+	int bodyParts ;//= 6;
 	int applesEaten;
 	
 	// where the apple is located
@@ -25,7 +25,7 @@ public class GamePanel extends JPanel implements ActionListener{
 	int appleY;
 	
 	// in which direction the snake starts
-	char direction = 'R';
+	char direction;// = 'R';
 	
 	boolean running = false;
 	
@@ -36,14 +36,15 @@ public class GamePanel extends JPanel implements ActionListener{
 	//for pause&resume 
 	static boolean gameOn = false;
 	
-	//for start menu
-	/*public static enum STATE{
-		MENU,
-		GAME
-	};
-	 public static STATE state = STATE.MENU;
-	 GameMenu menu = new GameMenu();
-	 */
+	//for reset button
+	boolean text = true;
+	JButton easy;
+	JButton medium;
+	JButton hard;
+	JButton insane;
+	
+	//JButton startButton;
+	
 
 	GamePanel(){
 		
@@ -54,19 +55,114 @@ public class GamePanel extends JPanel implements ActionListener{
 		this.setFocusable(true);
 		this.addKeyListener(new MyKeyAdapter());
 		
-		this.addMouseListener(new MouseInput());
+		/*start button
+		startButton = new JButton("Play");
+		this.add(startButton);
+		startButton.setSize(100,50);
+		startButton.setLocation(0,200);
+		startButton.addActionListener(this);
+		*/
+		//for resume button / modes buttons
+		easy   = new JButton("Easy");
+		medium = new JButton("Medium");
+		hard   = new JButton("Hard");
+		insane = new JButton("Insane");
+		
+		this.add(easy);
+		this.add(medium);
+		this.add(hard);
+		this.add(insane);
+		
+		easy.addActionListener(new ActionListener() {
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				DELAY = 175;
+				text = false;
+				running = true;
+				startGame();
+				easy.hide();
+				medium.hide();
+				hard.hide();
+				insane.hide();
+			}
+			
+		});
+		
+		medium.addActionListener(new ActionListener() {
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				DELAY = 150;
+				text = false;
+				running = true;
+				startGame();
+				easy.hide();
+				medium.hide();
+				hard.hide();
+				insane.hide();
+			}
+			
+		});
+		
+		hard.addActionListener(new ActionListener() {
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				DELAY = 100;
+				text = false;
+				running = true;
+				startGame();
+				easy.hide();
+				medium.hide();
+				hard.hide();
+				insane.hide();
+			}
+			
+		});
+		
+		insane.addActionListener(new ActionListener() {
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				DELAY = 75;
+				text = false;
+				running = true;
+				startGame();
+				easy.hide();
+				medium.hide();
+				hard.hide();
+				insane.hide();
+			}
+			
+		});
+
 		
 		startGame();
 
 	}
 	public void startGame() {
 		
-       newApple();
+		
+		newApple();
 		
 		running = true;
 		
 		timer = new Timer(DELAY,this);
 		timer.start();
+		
+		bodyParts = 6;
+		direction = 'R';
+		
+		repaint();
 		
 
 	}
@@ -88,7 +184,7 @@ public class GamePanel extends JPanel implements ActionListener{
 		draw(g);
 	}
 	public void draw(Graphics g) {
-		//if(state == STATE.GAME) {
+		
 		if (running) {
 
 		/*//the grid in the background
@@ -120,14 +216,12 @@ public class GamePanel extends JPanel implements ActionListener{
 		g.setColor(Color.cyan);
 		g.setFont(new Font("Ink Free",Font.BOLD,40));
 		FontMetrics metrics = getFontMetrics(g.getFont());
-		g.drawString("Score: "+ applesEaten,(SCREEN_WIDTH - metrics.stringWidth("Score: " + applesEaten))/2,g.getFont().getSize());
-		}else {
+		g.drawString("Score: "+ applesEaten,(SCREEN_WIDTH - metrics.stringWidth("Score: " + applesEaten))/5,g.getFont().getSize());
+		}else if(!text){
 			
 			gameOver(g);
 		}
-		/*}else if(state == STATE.MENU) {
-			menu.render(g);
-		}*/
+		
 	}
 	public void newApple() {
 
@@ -159,7 +253,16 @@ public class GamePanel extends JPanel implements ActionListener{
 	public void checkApple() {
 		if((x[0] == appleX) && (y[0] == appleY)) {
 			bodyParts++;
-			applesEaten++;
+			if(DELAY == 175) {
+				applesEaten++;
+			}else if(DELAY == 150) {
+				applesEaten++;
+			}else if(DELAY == 100) {
+				applesEaten++;
+			}else if(DELAY == 75) {
+				applesEaten++;
+			}
+			//applesEaten++;
 			newApple(); 
 		}
 
@@ -191,7 +294,7 @@ public class GamePanel extends JPanel implements ActionListener{
 					running = false;
 					
 				}
-				if(!running) {
+				if(!running && !text) {
 					timer.stop();
 				}
 			}
@@ -209,13 +312,21 @@ public class GamePanel extends JPanel implements ActionListener{
 		g.setFont(new Font("Ink Free",Font.BOLD,40));
 		FontMetrics metrics2 = getFontMetrics(g.getFont());
 		g.drawString("Score: " + applesEaten, (SCREEN_WIDTH - metrics2.stringWidth("Score: "+ applesEaten))/2, g.getFont().getSize());
+		
+		//Restart/Play
+		g.setColor(Color.cyan);
+		g.setFont(new Font("Ink Free",Font.BOLD,40));
+		FontMetrics metrics3 = getFontMetrics(g.getFont());
+		g.drawString("Press Space to  play",(SCREEN_WIDTH - metrics3.stringWidth("Press Space to play"))/2, SCREEN_HEIGHT/2 + 120);
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		
 		if(running) {
+			
 			move();
 			checkApple();
 			checkCollisions();
@@ -251,17 +362,31 @@ public class GamePanel extends JPanel implements ActionListener{
 					direction = 'D';
 				}
 				break;
-			case KeyEvent.VK_SPACE:
+			case KeyEvent.VK_P:
 				if(GamePanel.gameOn) {
 					resume();
 				}else {
 					pause();
 				}
 				break;
-
+			
+			}
+			
+			if(!running && !text) {
+				if(e.getKeyChar() == KeyEvent.VK_SPACE) {
+					startGame();
+					for(int i = bodyParts; i > 0 ;i--) {
+						x[i] = bodyParts *- 1;
+						y[i] = 0;
+					}
+					x[0] = 0;
+					y[0] = 0;
+					repaint();
+					applesEaten = 0;
+				}
 			}
 		}
-		//}
+		
 	}
 
 }
